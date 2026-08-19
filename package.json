@@ -1,0 +1,25 @@
+{
+  "name": "tcdog",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "TCDOG Node.js Express application",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^24.0.0",
+    "eslint": "^10.8.1",
+    "globals": "^17.11.0",
+    "knex": "^3.3.0",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.67.0"
+  }
+}

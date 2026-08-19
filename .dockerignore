@@ -1,0 +1,10 @@
+node_modules
+.git
+dist
+.cache
+Dockerfile
+docker-compose.yml
+.vscode
+data
+docs
+.env.template
