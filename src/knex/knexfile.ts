@@ -1,9 +1,11 @@
 import path from 'path';
+import { fileURLToPath } from 'url';
 
 import * as dotenv from 'dotenv';
-import { Knex } from 'knex';
+import type { Knex } from 'knex';
 
-const absPath = path.resolve(__dirname, '..', '..', '.env');
+const currentDirectory = path.dirname(fileURLToPath(import.meta.url));
+const absPath = path.resolve(currentDirectory, '..', '..', '.env');
 
 dotenv.config({ path: absPath });
 
