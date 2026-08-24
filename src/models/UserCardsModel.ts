@@ -16,6 +16,13 @@ export default class UserCardsModel {
         return created;
     }
 
+    static async findOneById(user_cards_id: string): Promise<UserCards | null> {
+        const userCard = await knex(UserCardsModel.tableName)
+            .where({ user_cards_id })
+            .first();
+        return userCard || null;
+    }
+
     /**
      * Finds a user card association by user ID and card ID.
      * @param {string} user_id - The ID of the user.
@@ -27,6 +34,10 @@ export default class UserCardsModel {
             .where({ user_id, card_id })
             .first();
         return userCard || null;
+    }
+
+    static async findAll(): Promise<UserCards[]> {
+        return knex(UserCardsModel.tableName).select("*");
     }
 
     /**
@@ -59,7 +70,7 @@ export default class UserCardsModel {
      * @param {string} cardId - The ID of the card to delete.
      * @returns A promise that resolves when the card is deleted.
      */
-    static async deleteCard(userId: string, cardId: string): Promise<void> {
+    static async delete(userId: string, cardId: string): Promise<void> {
         await knex(UserCardsModel.tableName)
             .where({ user_id: userId, card_id: cardId })
             .del();

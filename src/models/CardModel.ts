@@ -14,6 +14,10 @@ export default class CardModel{
         return card || null;
     }
 
+    static async findAll(): Promise<Card[]> {
+        return knex(CardModel.tableName).select("*");
+    }
+
     /**
      * Creates a new card in the database.
      * @param {Omit<Card, "card_id">} card - The card object to create.

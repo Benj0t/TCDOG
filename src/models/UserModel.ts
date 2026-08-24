@@ -19,6 +19,14 @@ export default class UserModel{
     }
 
     /**
+     * Finds all users in the database.
+     * @returns {Promise<User[]>} - A promise resolving to an array of all users.
+     */
+    static async findAll(): Promise<User[]> {
+        return knex(UserModel.tableName).select("*");
+    }
+
+    /**
      * Finds an user by their username.
      * @param {string} username - The username of the user to find.
      * @returns {Promise<User | null>} - A promise resolving to the found user or null.
