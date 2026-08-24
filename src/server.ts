@@ -10,7 +10,7 @@ app.use(express.json());
 app.use(express.static(join(currentDirectory, "public")));
 
 // Data schema & store: TCDOG items / records
-let dogs = [
+const dogs = [
   { id: 1, name: "Max", breed: "Golden Retriever", age: 3 },
   { id: 2, name: "Bella", breed: "German Shepherd", age: 2 },
 ];
