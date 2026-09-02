@@ -1,10 +1,5 @@
 import type { Knex } from "knex";
 
-/**
- * 
- * @param knex 
- * @returns Promise
- */
 export async function up(knex: Knex): Promise<void> {
     return knex.schema.createTable("cards", (table) => {
         table.string("card_id").primary();
@@ -17,11 +12,6 @@ export async function up(knex: Knex): Promise<void> {
     });
 }
 
-/**
- * 
- * @param knex 
- * @returns 
- */
 export async function down(knex: Knex): Promise<void> {
     return knex.schema.dropTable("cards");
 }

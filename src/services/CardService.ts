@@ -15,6 +15,14 @@ export class CardService {
         return card;
     }
 
+    static async getCardById(card_id: string): Promise<Card> {
+        const card = await CardModel.findOneById(card_id);
+        if (!card) {
+            throw new Error(`Card with ID ${card_id} not found`);
+        }
+        return card;
+    }
+
     static async getAllCards(): Promise<Card[]> {
         return await CardModel.findAll();
     }
