@@ -4,7 +4,7 @@ import type {Booster} from "../types/Booster.js";
 export default class BoosterModel{
     static tableName = "boosters";
 
-    static async findOneById(boosterId: number): Promise<Booster | null> {
+    static async findOneById(boosterId: string): Promise<Booster | null> {
         const booster = await knex(BoosterModel.tableName).where({ booster_id: boosterId }).first();
         return booster || null;
     }
@@ -27,7 +27,7 @@ export default class BoosterModel{
         return createdBooster;
     }
 
-    static async update(boosterId: number, booster: Partial<Omit<Booster, "boosterId">>): Promise<Booster | null> {
+    static async update(boosterId: string, booster: Partial<Omit<Booster, "boosterId">>): Promise<Booster | null> {
         const [updatedBooster] = await knex(BoosterModel.tableName)
             .where({ booster_id: boosterId })
             .update(booster)
@@ -35,7 +35,7 @@ export default class BoosterModel{
         return updatedBooster || null;
     }
 
-    static async delete(boosterId: number): Promise<void> {
+    static async delete(boosterId: string): Promise<void> {
         await knex(BoosterModel.tableName).where({ booster_id: boosterId }).del();
     }
 

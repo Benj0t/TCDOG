@@ -1,5 +1,5 @@
 export interface Booster {
-    boosterId: number;
+    boosterId: string;
     name: string;
     active: boolean;
     price: number;

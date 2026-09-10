@@ -25,10 +25,30 @@ export class CardController {
   }
 
   // POST /api/cards (payload déjà validé par un middleware Yup/Zod en amont)
-  static async create(req: Request, res: Response, next: NextFunction) {
+  static async createCard(req: Request, res: Response, next: NextFunction) {
     try {
       const newCard = await CardService.createCard(req.body);
       return res.status(201).json(newCard);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async updateCard(req: Request, res: Response, next: NextFunction) {
+    try {
+      const id = req.params.id as string;
+      const updatedCard = await CardService.updateCard(id, req.body);
+      return res.status(200).json(updatedCard);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async deleteCard(req: Request, res: Response, next: NextFunction) {
+    try {
+      const id = req.params.id as string;
+      await CardService.deleteCard(id);
+      return res.status(204).send();
     } catch (error) {
       next(error);
     }
