@@ -72,6 +72,14 @@ export default class UserModel{
         return updatedUser || null;
     }
 
+    static async updateMoney(id: string, money: number): Promise<User | null> {
+        const [updatedUser] = await knex(UserModel.tableName)
+            .where({ id })
+            .update({ money })
+            .returning("*");
+        return updatedUser || null;
+    }
+
     /**
      * Deletes a user from the database by their ID.
      * @param {string} id - The ID of the user to delete.
