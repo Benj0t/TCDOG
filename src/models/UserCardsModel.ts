@@ -1,6 +1,7 @@
 import type {UserCards} from "../types/UserCards.js";
 import {knex} from "../knex/database.js";
 
+
 export default class UserCardsModel {
     static tableName = "user_cards";
     /**
@@ -12,7 +13,6 @@ export default class UserCardsModel {
         const [created] = await knex(UserCardsModel.tableName)
             .insert(userCard)
             .returning("*");
-
         return created;
     }
 
@@ -57,11 +57,19 @@ export default class UserCardsModel {
      * @returns A promise resolving to the updated user card association or null if not found. 
      * */
     static async updateQuantity(userId: string, cardId: string, quantity: number): Promise<UserCards | null> {
-        const [updated] = await knex(UserCardsModel.tableName)
+        const rowsAffected = await knex(UserCardsModel.tableName)
             .where({ user_id: userId, card_id: cardId })
-            .update({ quantity })
-            .returning("*");
-        return updated || null;
+            .update({ quantity });
+
+        if (!rowsAffected) {
+            return null;
+        }
+
+        const updatedUserCard = await knex(UserCardsModel.tableName)
+            .where({ user_id: userId, card_id: cardId })
+            .first();
+
+        return updatedUserCard || null;
     }
 
     /** 

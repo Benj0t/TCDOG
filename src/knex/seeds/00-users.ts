@@ -7,7 +7,7 @@ export async function seed(knex: Knex): Promise<void> {
     // Inserts seed entries
     await knex("users").insert([
     {
-      id: 1,
+      user_id: 1,
       username: "AlphaTrainer",
       email: "alpha@tcdog.com",
       password: "$2b$10$SampleHashedPasswordForDev1234567890", // Hash bcrypt fictif
@@ -15,7 +15,7 @@ export async function seed(knex: Knex): Promise<void> {
       created_at: new Date(),
     },
     {
-      id: 2,
+      user_id: 2,
       username: "DogCollector",
       email: "collector@tcdog.com",
       password: "$2b$10$SampleHashedPasswordForDev1234567890",
@@ -23,7 +23,7 @@ export async function seed(knex: Knex): Promise<void> {
       created_at: new Date(),
     },
     {
-      id: 3,
+      user_id: 3,
       username: "BarkMaster",
       email: "bark@tcdog.com",
       password: "$2b$10$SampleHashedPasswordForDev1234567890",

@@ -15,7 +15,9 @@ export class UserService {
     }
 
     static async createUser(user: Omit<User, "user_id">): Promise<User> {
-        return await UserModel.create(user);
+        const userToInsert = {user_id: crypto.randomUUID(), ...user};
+
+        return await UserModel.create(userToInsert);
     }
 
     static async updateUser(user_id: string, user: Partial<Omit<User, "user_id">>): Promise<User> {

@@ -13,25 +13,34 @@ export default class BoosterModel{
         return knex(BoosterModel.tableName).select("*");
     }
 
-    static async create(booster: Omit<Booster, "boosterId">): Promise<Booster> {
-        const [createdBooster] = await knex(BoosterModel.tableName)
-            .insert({
-                name: booster.name,
-                price: booster.price,
-                image_url: booster.imageUrl,
-                active: booster.active,
-                cards_count: booster.cardsCount,
-                serie: booster.serie
-            })
-            .returning("*");
+    static async create(booster: Booster): Promise<Booster> {
+        const [createdId] = await knex(BoosterModel.tableName)
+            .insert(booster)
+
+        console.log("Created booster:", createdId); // Log the created booster for debugging
+            const createdBooster = await knex(BoosterModel.tableName)
+            .where({ booster_id: createdId })
+            .first();
+
+            if (!createdBooster) {
+                throw new Error("Failed to create booster");
+            }    
         return createdBooster;
     }
 
     static async update(boosterId: string, booster: Partial<Omit<Booster, "boosterId">>): Promise<Booster | null> {
-        const [updatedBooster] = await knex(BoosterModel.tableName)
+        const rowsAffected = await knex(BoosterModel.tableName)
             .where({ booster_id: boosterId })
-            .update(booster)
-            .returning("*");
+            .update(booster);
+
+        if (!rowsAffected) {
+            return null;
+        }
+
+        const updatedBooster = await knex(BoosterModel.tableName)
+            .where({ booster_id: boosterId })
+            .first();
+
         return updatedBooster || null;
     }
 

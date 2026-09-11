@@ -30,8 +30,8 @@ export class UserCardsService {
         return await UserCardsModel.findAll();
     }
 
-    static async createUserCards(userCards: Omit<UserCards, "user_cards_id">): Promise<UserCards> {
-        return await UserCardsModel.create(userCards);
+    static async createUserCards(userId: string, userCards: Omit<UserCards, "user_cards_id">): Promise<UserCards> {
+        return await UserCardsModel.create({ ...userCards, user_id: userId });
     }
 
     static async updateUserCardsQuantity(user_id: string, card_id: string, quantity: number): Promise<UserCards> {

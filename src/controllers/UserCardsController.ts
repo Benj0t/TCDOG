@@ -24,8 +24,10 @@ export class UserCardsController {
     }
 
     static async createUserCard(req: Request, res: Response, next: NextFunction) {
+        const userId = req.params.userId as string;
+        req.body.user_id = userId; // Ensure the user_id is set in the request body
         try {
-            const newUserCard = await UserCardsService.createUserCards(req.body);
+            const newUserCard = await UserCardsService.createUserCards(userId, req.body);
             return res.status(201).json(newUserCard);
         } catch (error) {
             next(error);

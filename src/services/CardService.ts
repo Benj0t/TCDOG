@@ -28,7 +28,8 @@ export class CardService {
     }
 
     static async createCard(card: Omit<Card, "card_id">): Promise<Card> {
-        return await CardModel.create(card);
+        const cardToInsert = {card_id: crypto.randomUUID(), ...card};
+        return await CardModel.create(cardToInsert);
     }
 
     static async updateCard(card_id: string, card: Partial<Omit<Card, "card_id">>): Promise<Card> {

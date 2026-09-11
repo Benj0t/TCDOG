@@ -15,8 +15,9 @@ export class BoosterDropRateController {
     static async createDropRate(req: Request, res: Response, next: NextFunction) {
         try {
             const boosterId = req.params.boosterId as string;
-            const { rarity, dropRate } = req.body;
-            await BoosterDropRateService.createDropRate(boosterId, rarity, dropRate);
+            const { rarity, drop_rate } = req.body;
+            console.log(`Creating drop rate for boosterId: ${boosterId}, rarity: ${rarity}, dropRate: ${drop_rate}`);
+            await BoosterDropRateService.createDropRate(boosterId, rarity, drop_rate);
             return res.status(201).json({ message: "Drop rate created successfully" });
         } catch (error) {
             next(error);
@@ -27,8 +28,9 @@ export class BoosterDropRateController {
         try {
             const boosterId = req.params.boosterId as string;
             const rarity = parseInt(req.params.rarity as string, 10);
-            const { dropRate } = req.body;
-            await BoosterDropRateService.updateDropRate(boosterId, rarity, dropRate);
+            const { drop_rate } = req.body;
+            console.log(`Updating drop rate for boosterId: ${boosterId}, rarity: ${rarity}, new dropRate: ${drop_rate}`);
+            await BoosterDropRateService.updateDropRate(boosterId, rarity, drop_rate);
             return res.status(200).json({ message: "Drop rate updated successfully" });
         } catch (error) {
             next(error);

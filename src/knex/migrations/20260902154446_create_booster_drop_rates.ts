@@ -8,7 +8,7 @@ export async function up(knex: Knex): Promise<void> {
         table.decimal("drop_rate", 5, 4).notNullable();
         table.primary(["booster_id", "rarity"]);
         table.check("rarity >= 1 AND rarity <= 6");
-        table.check("drop_rate >= 0 AND drop_rate <= 1");
+        table.check("`drop_rate` >= 0.0000 AND `drop_rate` <= 1.0000");
         table.foreign("booster_id").references("boosters.booster_id").onDelete("CASCADE");
     });
 }

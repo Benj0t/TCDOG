@@ -14,11 +14,12 @@ export class BoosterService {
         return await BoosterModel.findAll();
     }
 
-    static async createBooster(booster: Omit<Booster, "boosterId">): Promise<Booster> {
-        return await BoosterModel.create(booster);
+    static async createBooster(booster: Omit<Booster, "booster_id">): Promise<Booster> {
+        const boosterToInsert = {booster_id: crypto.randomUUID(), ...booster};
+        return await BoosterModel.create(boosterToInsert);
     }
 
-    static async updateBooster(boosterId: string, booster: Partial<Omit<Booster, "boosterId">>): Promise<Booster> {
+    static async updateBooster(boosterId: string, booster: Partial<Omit<Booster, "booster_id">>): Promise<Booster> {
         const updatedBooster = await BoosterModel.update(boosterId, booster);
         if (!updatedBooster) {
             throw new Error(`Booster with ID ${boosterId} not found`);
