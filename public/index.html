@@ -1,125 +1,211 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TCDOG - Dog Registry</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        max-width: 600px;
-        margin: 40px auto;
-        padding: 20px;
-        background: #f9f9f9;
-        color: #333;
-      }
-      h1 {
-        color: #2c3e50;
-      }
-      ul {
-        list-style: none;
-        padding: 0;
-      }
-      li {
-        background: #fff;
-        margin: 10px 0;
-        padding: 15px;
-        border-radius: 6px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-      form {
-        background: #fff;
-        padding: 20px;
-        border-radius: 6px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        margin-top: 20px;
-      }
-      input,
-      button {
-        padding: 10px;
-        margin: 5px 0;
-        width: 100%;
-        box-sizing: border-box;
-      }
-      button {
-        background: #3498db;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-      }
-      button:hover {
-        background: #2980b9;
-      }
-      .delete-btn {
-        background: #e74c3c;
-        width: auto;
-        padding: 5px 10px;
-      }
-      .delete-btn:hover {
-        background: #c0392b;
-      }
-    </style>
-  </head>
-  <body>
-    <h1>TCDOG Registry</h1>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TCDOG — Jeu de Cartes en Ligne</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0e14;
+      --card-bg: #151922;
+      --card-border: #222a38;
+      --accent: #6366f1;
+      --accent-glow: rgba(99, 102, 241, 0.35);
+      --text: #f3f4f6;
+      --text-muted: #94a3b8;
+    }
 
-    <div id="dog-list">
-      <h2>Registered Dogs</h2>
-      <ul id="dogs"></ul>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Arrière-plan lumineux d'ambiance */
+    .glow-bg {
+      position: absolute;
+      top: 20%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, var(--accent-glow) 0%, rgba(0, 0, 0, 0) 70%);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 1rem;
+      border-radius: 9999px;
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      color: #a5b4fc;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #22c55e;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #22c55e;
+    }
+
+    h1 {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+      background: linear-gradient(to bottom right, #ffffff 40%, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p.subtitle {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 2.5rem;
+      max-width: 550px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .cta-group {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 3rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.85rem 1.75rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: #4f46e5;
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(79, 70, 229, 0.4);
+    }
+
+    .btn-primary:hover {
+      background: #4338ca;
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: #1f2937;
+      color: #f3f4f6;
+      border: 1px solid #374151;
+    }
+
+    .btn-secondary:hover {
+      background: #283548;
+      transform: translateY(-2px);
+    }
+
+    /* Grille de stats / features */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.25rem;
+      text-align: left;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 1.25rem;
+    }
+
+    .card h3 {
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+      color: #fff;
+    }
+
+    .card p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="glow-bg"></div>
+
+  <div class="container">
+    <div class="badge">
+      <span class="status-dot"></span> Backend API : En ligne (Port 3000)
     </div>
 
-    <form id="dog-form">
-      <h2>Add a New Dog</h2>
-      <input type="text" id="name" placeholder="Dog Name" required />
-      <input type="text" id="breed" placeholder="Breed" required />
-      <input type="number" id="age" placeholder="Age" min="0" required />
-      <button type="submit">Add Dog</button>
-    </form>
+    <h1>TCDOG Arena</h1>
+    <p class="subtitle">
+      Plateforme TCG en ligne. Ouvre des boosters, collectionne tes cartes et affronte d'autres joueurs en duel.
+    </p>
 
-    <script>
-      async function fetchDogs() {
-        const res = await fetch("/api/dogs");
-        const dogs = await res.json();
-        const ul = document.getElementById("dogs");
-        ul.innerHTML = "";
-        dogs.forEach((dog) => {
-          const li = document.createElement("li");
-          li.innerHTML = `
-                    <span><strong>${dog.name}</strong> (${dog.breed}, ${dog.age} yrs)</span>
-                    <button class="delete-btn" onclick="deleteDog(${dog.id})">Delete</button>
-                `;
-          ul.appendChild(li);
-        });
-      }
+    <div class="cta-group">
+      <a href="http://localhost:5173" class="btn btn-primary">Lancer l'App (Front Vite) &rarr;</a>
+      <a href="http://localhost:5173/login" class="btn btn-secondary">Espace Connexion</a>
+    </div>
 
-      async function deleteDog(id) {
-        await fetch(`/api/dogs/${id}`, { method: "DELETE" });
-        fetchDogs();
-      }
+    <div class="grid">
+      <div class="card">
+        <h3>⚡ Serveur API</h3>
+        <p>Express & Node.js configurés pour distribuer les cartes et gérer les sessions.</p>
+      </div>
+      <div class="card">
+        <h3>🛡️ Authentification</h3>
+        <p>OAuth2 Discord & Google prêt avec gestion de session sécurisée.</p>
+      </div>
+      <div class="card">
+        <h3>🃏 Collection TCDOG</h3>
+        <p>Génération de boosters et inventaire persistant en base de données.</p>
+      </div>
+    </div>
+  </div>
 
-      document
-        .getElementById("dog-form")
-        .addEventListener("submit", async (e) => {
-          e.preventDefault();
-          const name = document.getElementById("name").value;
-          const breed = document.getElementById("breed").value;
-          const age = parseInt(document.getElementById("age").value);
-
-          await fetch("/api/dogs", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name, breed, age }),
-          });
-
-          document.getElementById("dog-form").reset();
-          fetchDogs();
-        });
-
-      fetchDogs();
-    </script>
-  </body>
+</body>
 </html>

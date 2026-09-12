@@ -1,5 +1,5 @@
 import express, { type Request, type Response } from "express";
-import { dirname, join } from "path";
+import path, { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import cardRouter from "./routes/CardRoutes.js";
 import userCardsRouter from "./routes/UserCardsRoutes.js";
@@ -13,6 +13,9 @@ const currentDirectory = dirname(fileURLToPath(import.meta.url));
 app.use(express.json());
 app.use(express.static(join(currentDirectory, "public")));
 
+app.get("/", (req, res) => {
+  res.sendFile(path.join(currentDirectory, "../public/index.html"));
+});
 app.use("/api/cards", cardRouter);
 app.use("/api/users", userRouter);
 app.use("/api/users", userCardsRouter);
