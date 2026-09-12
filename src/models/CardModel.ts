@@ -14,17 +14,28 @@ export default class CardModel{
         return card || null;
     }
 
+    static async findAll(): Promise<Card[]> {
+        return knex(CardModel.tableName).select("*");
+    }
+
     /**
      * Creates a new card in the database.
      * @param {Omit<Card, "card_id">} card - The card object to create.
      * @returns {Promise<Card>} - A promise resolving to the created card.
      */
-    static async create(card: Omit<Card, "card_id">): Promise<Card> {
-        const [createdCard] = await knex(CardModel.tableName)
-            .insert(card)
-            .returning("*");
-        return createdCard;
+static async create(card: Card): Promise<Card> {
+    const [createdId] = await knex(CardModel.tableName).insert(card);
+
+    const createdCard = await knex(CardModel.tableName)
+        .where({ card_id : createdId })
+        .first();
+
+    if (!createdCard) {
+        throw new Error("Failed to create card");
     }
+
+    return createdCard;
+}
 
     /**
      * Updates an existing card in the database.
@@ -33,10 +44,18 @@ export default class CardModel{
      * @returns {Promise<Card | null>} - A promise resolving to the updated card or null.
      */
     static async update(card_id: string, card: Partial<Omit<Card, "card_id">>): Promise<Card | null> {
-        const [updatedCard] = await knex(CardModel.tableName)
+        const rowsAffected = await knex(CardModel.tableName)
             .where({ card_id })
-            .update(card)
-            .returning("*");
+            .update(card);
+
+        if (!rowsAffected) {
+            return null;
+        }
+
+        const updatedCard = await knex(CardModel.tableName)
+            .where({ card_id })
+            .first();
+
         return updatedCard || null;
     }
 

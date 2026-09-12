@@ -13,9 +13,17 @@ export default class UserModel{
      * @param {string} id - The ID of the user to find.
      * @returns {Promise<User | null>} - A promise resolving to the found user or null.
      */
-    static async findOneById(id: string): Promise<User | null> {
-        const user = await knex(UserModel.tableName).where({ id }).first();
+    static async findOneById(user_id: string): Promise<User | null> {
+        const user = await knex(UserModel.tableName).where({ user_id }).first();
         return user || null;
+    }
+
+    /**
+     * Finds all users in the database.
+     * @returns {Promise<User[]>} - A promise resolving to an array of all users.
+     */
+    static async findAll(): Promise<User[]> {
+        return knex(UserModel.tableName).select("*");
     }
 
     /**
@@ -40,14 +48,23 @@ export default class UserModel{
 
     /**
      * Creates a new user in the database.
-     * @param {Omit<User, "id" | "created_at">} user - The user object to create.
+     * @param {Omit<User, "created_at">} user - The user object to create.
      * @returns {Promise<User>} - A promise resolving to the created user.
      */
-    static async create(user: Omit<User, "id" | "created_at">): Promise<User> {
-        const [createdUser] = await knex(UserModel.tableName)
+    static async create(user: Omit<User, "created_at">): Promise<User> {
+        const [createdId] = await knex(UserModel.tableName)
             .insert(user)
-            .returning("*");
-        return createdUser;
+        console.log("Created user:", createdId); // Log the created user for debugging
+        
+        const createdUser = await knex(UserModel.tableName)
+            .where({ user_id: createdId })
+            .first();
+        
+        if (!createdUser) {
+            throw new Error("Failed to create user");
+        }
+        
+        return createdUser;;
     }
 
     /**
@@ -56,20 +73,36 @@ export default class UserModel{
      * @param {Partial<Omit<User, "id" | "created_at">>} user - The user object with updated properties.
      * @returns {Promise<User | null>} - A promise resolving to the updated user or null.
      */
-    static async update(id: string, user: Partial<Omit<User, "id" | "created_at">>): Promise<User | null> {
+    static async update(id: string, user: Partial<Omit<User, "user_id" | "created_at">>): Promise<User | null> {
+        const rowsAffected = await knex(UserModel.tableName)
+            .where({ user_id: id })
+            .update(user);
+
+        if (!rowsAffected) {
+            return null;
+        }
+
+        const updatedUser = await knex(UserModel.tableName)
+            .where({ user_id: id })
+            .first();
+
+        return updatedUser || null;
+    }
+
+    static async updateMoney(id: string, money: number): Promise<User | null> {
         const [updatedUser] = await knex(UserModel.tableName)
-            .where({ id })
-            .update(user)
+            .where({ user_id: id })
+            .update({ money })
             .returning("*");
         return updatedUser || null;
     }
 
     /**
      * Deletes a user from the database by their ID.
-     * @param {string} id - The ID of the user to delete.
+     * @param {string} user_id - The ID of the user to delete.
      * @returns {Promise<void>} - A promise that resolves when the user is deleted.
      */
-    static async delete(id: string): Promise<void> {
-        await knex(UserModel.tableName).where({ id }).del();
+    static async delete(user_id: string): Promise<void> {
+        await knex(UserModel.tableName).where({ user_id }).del();
     }
 }
