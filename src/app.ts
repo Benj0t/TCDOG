@@ -6,6 +6,7 @@ import userCardsRouter from "./routes/UserCardsRoutes.js";
 import boosterRouter from "./routes/BoosterRoutes.js";
 import { boosterDropRateRouter } from "./routes/BoosterDropRate.js";
 import userRouter from "./routes/UserRoutes.js";
+import authRoute from "./routes/authRoute.js";
 
 const app = express();
 const currentDirectory = dirname(fileURLToPath(import.meta.url));
@@ -16,6 +17,7 @@ app.use(express.static(join(currentDirectory, "public")));
 app.get("/", (req, res) => {
   res.sendFile(path.join(currentDirectory, "../public/index.html"));
 });
+app.use("/api/auth", authRoute);
 app.use("/api/cards", cardRouter);
 app.use("/api/users", userRouter);
 app.use("/api/users", userCardsRouter);
