@@ -7,8 +7,14 @@ import boosterRouter from "./routes/BoosterRoutes.js";
 import { boosterDropRateRouter } from "./routes/BoosterDropRate.js";
 import userRouter from "./routes/UserRoutes.js";
 import authRoute from "./routes/authRoute.js";
+import cors from "cors";
 
 const app = express();
+app.use(cors({
+  origin: 'http://localhost:5173', 
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  credentials: true // Allow cookies to be sent with requests
+}));
 const currentDirectory = dirname(fileURLToPath(import.meta.url));
 
 app.use(express.json());
