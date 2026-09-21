@@ -10,6 +10,10 @@ export class UserService {
         return user;
     }
 
+    static async findUserByOAuthId(oauth_id: string): Promise<User | null> {
+        return await UserModel.findOneByOAuthId(oauth_id);
+    }
+
     static async getAllUsers(): Promise<User[]> {
         return await UserModel.findAll();
     }
@@ -26,6 +30,14 @@ export class UserService {
         return await UserModel.create(userToInsert);
     }
 
+    static async findOrCreateOAuthUser(user: OAuthUserPayload): Promise<User> {
+        const existingUser = await UserModel.findOneByOAuthId(user.oauth_id);
+        if (existingUser) {
+            return existingUser;
+        }
+        const userToInsert = {user_id: crypto.randomUUID(), ...user};
+        return await UserModel.create(userToInsert);
+    }
     static async updateUser(user_id: string, user: Partial<Omit<User, "user_id">>): Promise<User> {
         const updatedUser = await UserModel.update(user_id, user);
         if (!updatedUser) {

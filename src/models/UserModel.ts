@@ -18,6 +18,9 @@ export default class UserModel{
         return user || null;
     }
 
+    static findOneByOAuthId(oauth_id: string): Promise<User | null> {
+        return knex(UserModel.tableName).where({ oauth_id }).first();
+    }
     /**
      * Finds all users in the database.
      * @returns {Promise<User[]>} - A promise resolving to an array of all users.

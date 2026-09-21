@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import axios from "axios";
 import { UserService } from "../../services/UserService.js";
-
+import jwt from "jsonwebtoken";
 
 async function getDiscordToken(code: string) {
 
@@ -42,7 +42,7 @@ export async function authDiscordController(req: Request, res: Response) {
     const { code } = req.body;
     const tokenData = await getDiscordToken(code);
     const userInfo = await getDiscordUserInfo(tokenData.access_token);
-    
+
     const { username, email, id, avatar } = userInfo;
     const avatarUrl = avatar ? `https://cdn.discordapp.com/avatars/${id}/${avatar}.png` : null;
     const userPayload = {
@@ -52,9 +52,16 @@ export async function authDiscordController(req: Request, res: Response) {
         provider : 'discord' as const,
         avatar: avatarUrl,
     };
-    const user = await UserService.createOAuthUser(userPayload);
+    const user = await UserService.findOrCreateOAuthUser(userPayload);
     console.log("User created or found:", user);
-    res.status(200).json({ message: "Discord authentication successful", userInfo });
+
+    const token = jwt.sign(
+      { userId: user.user_id }, 
+      process.env.JWT_SECRET_KEY as string, 
+      { expiresIn: '30d' }
+    );
+    res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
+    res.status(200).json({ message: "Discord authentication successful", user: {id: user.user_id, username: user.username, avatar: user.avatar} });
 } catch (error) {
     console.error("Error during Discord authentication:", error);
     res.status(500).json({ message: "Error occurred during Discord authentication", error });

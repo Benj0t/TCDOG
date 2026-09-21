@@ -8,6 +8,7 @@ import { boosterDropRateRouter } from "./routes/BoosterDropRate.js";
 import userRouter from "./routes/UserRoutes.js";
 import authRoute from "./routes/authRoute.js";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 const app = express();
 app.use(cors({
@@ -18,6 +19,7 @@ app.use(cors({
 const currentDirectory = dirname(fileURLToPath(import.meta.url));
 
 app.use(express.json());
+app.use(cookieParser());
 app.use(express.static(join(currentDirectory, "public")));
 
 app.get("/", (req, res) => {

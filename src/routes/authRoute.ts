@@ -5,6 +5,6 @@ import { authLoginController } from "../controllers/auth/AuthLoginController.js"
 
 const authRoute = Router();
 authRoute.post("/discord", authDiscordController);
-authRoute.get("/google", authGoogleController);
+authRoute.post("/google", authGoogleController);
 authRoute.get("/login", authLoginController);
 export default authRoute;
