@@ -1,4 +1,5 @@
 import UserModel from "../models/UserModel.js";
+import { PrivateProfile, PublicProfile } from "../types/Profile.js";
 import { OAuthUserPayload, User } from "../types/User.js";
 
 export class UserService {
@@ -12,6 +13,34 @@ export class UserService {
 
     static async findUserByOAuthId(oauth_id: string): Promise<User | null> {
         return await UserModel.findOneByOAuthId(oauth_id);
+    }
+
+    static async getUserMe(user_id: string): Promise <PrivateProfile | null>{
+        const user = await UserModel.findOneById(user_id);
+        if (!user)
+            throw new Error(`User with ID ${user_id} not found`);
+        const profile = {
+            id: user.user_id,
+            username: user.username,
+            avatar: user.avatar ? user.avatar : null,
+            email: user.email,
+            provider: user.provider,
+            createdAt: user.created_at,
+        };
+        return profile;
+    }
+
+    static async getUserProfile(user_id: string): Promise <PublicProfile | null>{
+        const user = await UserModel.findOneById(user_id);
+        if (!user)
+            throw new Error(`User with ID ${user_id} not found`);
+        const profile = {
+            id: user.user_id,
+            username: user.username,
+            avatar: user.avatar ? user.avatar : null,
+        };
+        return profile;
+
     }
 
     static async getAllUsers(): Promise<User[]> {
