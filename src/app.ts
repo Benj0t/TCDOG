@@ -1,18 +1,31 @@
 import express, { type Request, type Response } from "express";
-import { dirname, join } from "path";
+import path, { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import cardRouter from "./routes/CardRoutes.js";
 import userCardsRouter from "./routes/UserCardsRoutes.js";
 import boosterRouter from "./routes/BoosterRoutes.js";
 import { boosterDropRateRouter } from "./routes/BoosterDropRate.js";
 import userRouter from "./routes/UserRoutes.js";
+import authRoute from "./routes/authRoute.js";
+import cors from "cors";
+import cookieParser from "cookie-parser";
 
 const app = express();
+app.use(cors({
+  origin: 'http://localhost:5173', 
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  credentials: true // Allow cookies to be sent with requests
+}));
 const currentDirectory = dirname(fileURLToPath(import.meta.url));
 
 app.use(express.json());
+app.use(cookieParser());
 app.use(express.static(join(currentDirectory, "public")));
 
+app.get("/", (req, res) => {
+  res.sendFile(path.join(currentDirectory, "../public/index.html"));
+});
+app.use("/api/auth", authRoute);
 app.use("/api/cards", cardRouter);
 app.use("/api/users", userRouter);
 app.use("/api/users", userCardsRouter);

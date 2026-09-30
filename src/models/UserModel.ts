@@ -18,6 +18,9 @@ export default class UserModel{
         return user || null;
     }
 
+    static findOneByOAuthId(oauth_id: string): Promise<User | null> {
+        return knex(UserModel.tableName).where({ oauth_id }).first();
+    }
     /**
      * Finds all users in the database.
      * @returns {Promise<User[]>} - A promise resolving to an array of all users.
@@ -52,19 +55,16 @@ export default class UserModel{
      * @returns {Promise<User>} - A promise resolving to the created user.
      */
     static async create(user: Omit<User, "created_at">): Promise<User> {
-        const [createdId] = await knex(UserModel.tableName)
-            .insert(user)
-        console.log("Created user:", createdId); // Log the created user for debugging
-        
+        await knex(UserModel.tableName)
+            .insert(user);
         const createdUser = await knex(UserModel.tableName)
-            .where({ user_id: createdId })
+            .where({ user_id: user.user_id })
             .first();
-        
         if (!createdUser) {
             throw new Error("Failed to create user");
         }
         
-        return createdUser;;
+        return createdUser;
     }
 
     /**

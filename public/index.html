@@ -1,125 +1,309 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TCDOG - Dog Registry</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        max-width: 600px;
-        margin: 40px auto;
-        padding: 20px;
-        background: #f9f9f9;
-        color: #333;
-      }
-      h1 {
-        color: #2c3e50;
-      }
-      ul {
-        list-style: none;
-        padding: 0;
-      }
-      li {
-        background: #fff;
-        margin: 10px 0;
-        padding: 15px;
-        border-radius: 6px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-      form {
-        background: #fff;
-        padding: 20px;
-        border-radius: 6px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        margin-top: 20px;
-      }
-      input,
-      button {
-        padding: 10px;
-        margin: 5px 0;
-        width: 100%;
-        box-sizing: border-box;
-      }
-      button {
-        background: #3498db;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-      }
-      button:hover {
-        background: #2980b9;
-      }
-      .delete-btn {
-        background: #e74c3c;
-        width: auto;
-        padding: 5px 10px;
-      }
-      .delete-btn:hover {
-        background: #c0392b;
-      }
-    </style>
-  </head>
-  <body>
-    <h1>TCDOG Registry</h1>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TCDOG | Trading Card Game</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;800&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #0f0c0a;
+      --bg-gradient: radial-gradient(circle at top right, #1f1813 0%, #0a0807 100%);
+      --card-bg: rgba(25, 20, 16, 0.6);
+      --text-light: #f7f4ee;
+      --text-medium: #a89f95;
+      --primary: #d68945; /* Golden Retriever glow */
+      --primary-hover: #e3a668;
+      --accent: #f5b97f;
+      --border-color: rgba(214, 137, 69, 0.2);
+    }
 
-    <div id="dog-list">
-      <h2>Registered Dogs</h2>
-      <ul id="dogs"></ul>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg-gradient);
+      background-color: var(--bg-color);
+      color: var(--text-light);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+      padding: 2rem 1.5rem;
+      position: relative;
+    }
+
+    .bg-elements {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.15;
+      animation: float-blob 15s infinite alternate ease-in-out;
+    }
+    .blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: #d68945; }
+    .blob-2 { bottom: -20%; right: -10%; width: 60vw; height: 60vw; background: #8c5a2e; animation-delay: -5s; }
+    
+    .dust {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: var(--accent);
+      border-radius: 50%;
+      opacity: 0;
+      animation: sparkle 8s infinite linear;
+      box-shadow: 0 0 10px var(--accent);
+    }
+    .dust:nth-child(3) { top: 20%; left: 15%; animation-delay: 1s; }
+    .dust:nth-child(4) { top: 60%; left: 80%; animation-delay: 3s; width: 3px; height: 3px; }
+    .dust:nth-child(5) { top: 80%; left: 25%; animation-delay: 5s; width: 5px; height: 5px; }
+    .dust:nth-child(6) { top: 30%; left: 65%; animation-delay: 7s; }
+
+    @keyframes float-blob {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(5%, 5%) scale(1.1); }
+    }
+    @keyframes sparkle {
+      0% { transform: translateY(0); opacity: 0; }
+      20% { opacity: 0.8; }
+      80% { opacity: 0.8; }
+      100% { transform: translateY(-100px); opacity: 0; }
+    }
+
+    .main-card {
+      position: relative;
+      z-index: 10;
+      max-width: 800px;
+      width: 100%;
+      background: var(--card-bg);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      padding: 4rem 3rem;
+      text-align: center;
+      box-shadow: 
+        0 25px 50px rgba(0, 0, 0, 0.5),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes fade-up {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(214, 137, 69, 0.1);
+      color: var(--primary);
+      padding: 0.5rem 1.25rem;
+      border-radius: 100px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+      border: 1px solid var(--border-color);
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: #10b981;
+      border-radius: 50%;
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+    }
+
+    h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 800;
+      color: var(--text-light);
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+      line-height: 1.1;
+    }
+
+    h1 span {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p.description {
+      font-size: 1.15rem;
+      color: var(--text-medium);
+      line-height: 1.6;
+      max-width: 600px;
+      margin: 0 auto 2.5rem;
+    }
+
+    .btn-group {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 4rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      font-size: 1.1rem;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #0f0c0a;
+      box-shadow: 0 8px 20px rgba(214, 137, 69, 0.2);
+      border: 1px solid var(--primary);
+    }
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 25px rgba(214, 137, 69, 0.3);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-light);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      text-align: left;
+    }
+
+    .feature-card {
+      padding: 1.5rem;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .feature-card:nth-child(1) { animation-delay: 0.2s; }
+    .feature-card:nth-child(2) { animation-delay: 0.3s; }
+    .feature-card:nth-child(3) { animation-delay: 0.4s; }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(214, 137, 69, 0.3);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .feature-icon {
+      font-size: 1.5rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+      display: inline-block;
+      padding: 0.75rem;
+      background: rgba(214, 137, 69, 0.1);
+      border-radius: 12px;
+      border: 1px solid rgba(214, 137, 69, 0.2);
+    }
+
+    .feature-card h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.15rem;
+      color: var(--text-light);
+      margin-bottom: 0.5rem;
+    }
+
+    .feature-card p {
+      font-size: 0.95rem;
+      color: var(--text-medium);
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-elements">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="dust"></div>
+    <div class="dust"></div>
+    <div class="dust"></div>
+    <div class="dust"></div>
+  </div>
+
+  <div class="main-card">
+    <div class="status-badge">
+      <div class="status-dot"></div>
+      Backend Opérationnel
     </div>
 
-    <form id="dog-form">
-      <h2>Add a New Dog</h2>
-      <input type="text" id="name" placeholder="Dog Name" required />
-      <input type="text" id="breed" placeholder="Breed" required />
-      <input type="number" id="age" placeholder="Age" min="0" required />
-      <button type="submit">Add Dog</button>
-    </form>
+    <h1>TCDOG <span>Collection</span></h1>
+    
+    <p class="description">
+      Le jeu de cartes à collectionner pensé pour les amoureux des canidés. Ouvrez vos boosters, rassemblez des races uniques et complétez votre classeur numérique.
+    </p>
 
-    <script>
-      async function fetchDogs() {
-        const res = await fetch("/api/dogs");
-        const dogs = await res.json();
-        const ul = document.getElementById("dogs");
-        ul.innerHTML = "";
-        dogs.forEach((dog) => {
-          const li = document.createElement("li");
-          li.innerHTML = `
-                    <span><strong>${dog.name}</strong> (${dog.breed}, ${dog.age} yrs)</span>
-                    <button class="delete-btn" onclick="deleteDog(${dog.id})">Delete</button>
-                `;
-          ul.appendChild(li);
-        });
-      }
+    <div class="btn-group">
+      <a href="http://localhost:5173" class="btn btn-primary">
+        Lancer l'application
+      </a>
+      <a href="http://localhost:5173/login" class="btn btn-secondary">
+        Mon compte & Collection
+      </a>
+    </div>
 
-      async function deleteDog(id) {
-        await fetch(`/api/dogs/${id}`, { method: "DELETE" });
-        fetchDogs();
-      }
+    <div class="features">
+      <div class="feature-card">
+        <div class="feature-icon">📦</div>
+        <h3>Boosters Virtuels</h3>
+        <p>Ouvrez des packs scellés pour enrichir votre collection avec des cartes rares et holographiques.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🛡️</div>
+        <h3>Connexion Sécurisée</h3>
+        <p>Authentification OAuth2 via Discord. Vos données et votre inventaire sont sauvegardés instantanément.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📖</div>
+        <h3>Classeur Complet</h3>
+        <p>Gérez et triez votre meute parfaite en attendant l'arrivée des fonctionnalités compétitives.</p>
+      </div>
+    </div>
+  </div>
 
-      document
-        .getElementById("dog-form")
-        .addEventListener("submit", async (e) => {
-          e.preventDefault();
-          const name = document.getElementById("name").value;
-          const breed = document.getElementById("breed").value;
-          const age = parseInt(document.getElementById("age").value);
-
-          await fetch("/api/dogs", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name, breed, age }),
-          });
-
-          document.getElementById("dog-form").reset();
-          fetchDogs();
-        });
-
-      fetchDogs();
-    </script>
-  </body>
+</body>
 </html>

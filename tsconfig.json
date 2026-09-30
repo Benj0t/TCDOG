@@ -14,7 +14,7 @@
     },
     "include": [
         "src/**/*.ts"
-    ],
+, "src/controllers/auth/AuthGoogleController.ts"    ],
     "exclude": [
         "node_modules",
         "dist"
