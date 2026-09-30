@@ -21,7 +21,6 @@
     "dotenv": "^17.4.2",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.3",
-    "jwt": "^0.2.0",
     "mysql2": "^3.23.3",
     "winston": "^3.19.0",
     "winston-console-format": "^1.0.8",
@@ -53,6 +52,7 @@
     "unrs-resolver@1.12.2": true,
     "yup@1.7.1": true,
     "esbuild@0.28.2": true,
-    "jsonwebtoken@9.0.3": true
+    "jsonwebtoken@9.0.3": true,
+    "node-base64@0.0.1": true
   }
 }
